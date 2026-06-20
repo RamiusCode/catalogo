@@ -41,7 +41,13 @@
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
-  html  { scroll-behavior: smooth; }
+  /* Forzar modo claro: evita que el "modo oscuro" del navegador del
+     celular cambie los colores de nuestro diseño. */
+  html {
+    scroll-behavior: smooth;
+    color-scheme: only light;
+    background: var(--cream);
+  }
 
   body {
     background: var(--cream);
