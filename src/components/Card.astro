@@ -419,9 +419,9 @@ const funciones = [
     const screen = overlay.querySelector('.demo-screen') as HTMLElement;
     const iframe = overlay.querySelector('.demo-iframe') as HTMLIFrameElement;
     if (!screen || !iframe) return;
-    const W = 390, H = 844;                 // tamaño lógico de un teléfono
-    const maxW = Math.min(window.innerWidth - 24, 400) - 14;   // -14 = bordes del marco
-    const maxH = Math.min(window.innerHeight - 130, 880) - 14;  // deja sitio a barra y texto
+    const W = 412, H = 812;                 // teléfono lógico (más ancho y un poco menos alto)
+    const maxW = Math.min(window.innerWidth - 20, 420) - 14;   // -14 = bordes del marco
+    const maxH = Math.min(window.innerHeight - 155, 850) - 14;  // deja sitio a barra y texto
     const scale = Math.min(maxW / W, maxH / H);
     iframe.style.width  = W + 'px';
     iframe.style.height = H + 'px';
