@@ -328,15 +328,18 @@ const funciones = [
     </div>
   </div>
 
-  <!-- Marco de celular con la invitación -->
-  <div class="demo-frame w-full max-w-[400px] bg-white overflow-hidden"
-       style="height:min(calc(100dvh - 150px), 820px); border:7px solid #1B4332; border-radius:30px;
+  <!-- Marco de celular: el iframe se renderiza como un teléfono real (390×844)
+       y se escala para que la invitación quepa COMPLETA dentro del marco. -->
+  <div class="demo-frame bg-white overflow-hidden"
+       style="border:7px solid #1B4332; border-radius:30px;
               box-shadow:0 24px 70px rgba(0,0,0,0.45); transform:scale(0.95)">
-    <iframe data-src={linkEjemplo} title={`Vista previa — ${titulo}`}
-            class="w-full h-full" style="border:0; display:block; background:#ffffff"
-            loading="lazy"
-            allow="autoplay; fullscreen; geolocation; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            allowfullscreen></iframe>
+    <div class="demo-screen" style="position:relative; overflow:hidden">
+      <iframe data-src={linkEjemplo} title={`Vista previa — ${titulo}`}
+              class="demo-iframe" style="border:0; display:block; background:#ffffff; transform-origin:top left"
+              loading="lazy"
+              allow="autoplay; fullscreen; geolocation; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              allowfullscreen></iframe>
+    </div>
   </div>
 
   <!-- Hint -->
@@ -404,8 +407,34 @@ const funciones = [
       overlay.style.visibility = 'visible';
       overlay.style.pointerEvents = 'auto';
       document.body.style.overflow = 'hidden';
+      sizeDemo(overlay);
       gsap.to(overlay, { opacity: 1, duration: 0.25, ease: 'power2.out' });
       gsap.fromTo(frame, { scale: 0.95 }, { scale: 1, duration: 0.38, ease: 'back.out(1.4)' });
+    });
+  });
+
+  // Calcula el tamaño del marco: el iframe se renderiza como un teléfono real
+  // (390×844) y se escala para caber completo en la pantalla disponible.
+  function sizeDemo(overlay: HTMLElement) {
+    const screen = overlay.querySelector('.demo-screen') as HTMLElement;
+    const iframe = overlay.querySelector('.demo-iframe') as HTMLIFrameElement;
+    if (!screen || !iframe) return;
+    const W = 390, H = 844;                 // tamaño lógico de un teléfono
+    const maxW = Math.min(window.innerWidth - 24, 400) - 14;   // -14 = bordes del marco
+    const maxH = Math.min(window.innerHeight - 130, 880) - 14;  // deja sitio a barra y texto
+    const scale = Math.min(maxW / W, maxH / H);
+    iframe.style.width  = W + 'px';
+    iframe.style.height = H + 'px';
+    iframe.style.transform = `scale(${scale})`;
+    screen.style.width  = `${Math.round(W * scale)}px`;
+    screen.style.height = `${Math.round(H * scale)}px`;
+  }
+
+  // Recalcular si cambia el tamaño/orientación con un demo abierto
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.demo-overlay').forEach(ov => {
+      const el = ov as HTMLElement;
+      if (el.style.visibility === 'visible') sizeDemo(el);
     });
   });
 
